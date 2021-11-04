@@ -94,7 +94,7 @@ describe('Todos', () => {
     });
   });
 
-  it.skip('should not be able to update a non existing todo', async () => {
+  it('should not be able to update a non existing todo', async () => {
     const userResponse = await request(app)
       .post('/users')
       .send({

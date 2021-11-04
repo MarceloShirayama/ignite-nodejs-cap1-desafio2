@@ -39,7 +39,7 @@ function checksTodoExists(request, response, next) {
   const user = users.find(user => user.username === username)
   const todo = user.todos.find(todo => todo.id === id)
 
-  if (!(validId && todo)) return response.status(400).json({ error: 'incorrect data' })
+  if (!(validId && todo)) return response.status(404).json({ error: 'incorrect data' })
 
   request.todo = todo
 
