@@ -32,7 +32,18 @@ function checksCreateTodosUserAvailability(request, response, next) {
 }
 
 function checksTodoExists(request, response, next) {
-  // TODO: Complete aqui
+  const { username } = request.headers
+  const { id } = request.params
+
+  const validId = validate(id)
+  const user = users.find(user => user.username === username)
+  const todo = user.todos.find(todo => todo.id === id)
+
+  if (!(validId && todo)) return response.status(400).json({ error: 'incorrect data' })
+
+  request.todo = todo
+
+  next()
 }
 
 function findUserById(request, response, next) {
