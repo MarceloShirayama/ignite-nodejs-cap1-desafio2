@@ -4,19 +4,23 @@ const { validate } = require('uuid');
 const { app } = require('../');
 
 describe('Users', () => {
+  let fakeUser
+
+  beforeEach(() => {
+    fakeUser = {
+      name: 'John Doe',
+      username: 'johndoe1'
+    }
+  })
   it('should be able to create a new user', async () => {
     const response = await request(app)
       .post('/users')
-      .send({
-        name: 'John Doe',
-        username: 'johndoe1'
-      });
+      .send(fakeUser);
 
     expect(validate(response.body.id)).toBe(true);
 
     expect(response.body).toMatchObject({
-      name: 'John Doe',
-      username: 'johndoe1',
+      ...fakeUser,
       todos: [],
       pro: false
     });
@@ -29,17 +33,11 @@ describe('Users', () => {
     async () => {
       await request(app)
         .post('/users')
-        .send({
-          name: 'John Doe',
-          username: 'johndoe2'
-        });
+        .send(fakeUser);
 
       const response = await request(app)
         .post('/users')
-        .send({
-          name: 'John Doe',
-          username: 'johndoe2'
-        })
+        .send(fakeUser)
         .expect(400);
 
       expect(response.body.error).toBeTruthy();
