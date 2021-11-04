@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-let users = [];
+const users = [];
 
 function checksExistsUserAccount(request, response, next) {
   const { username } = request.headers
@@ -22,12 +22,12 @@ function checksExistsUserAccount(request, response, next) {
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  const { username } = request.headers
+  const { user } = request
 
-  const user = users.find(user => user.username === username)
-
-  request.user = user
-
+  if (user.todos.length >= 10 && !user.pro) {
+    return response.status(403).json({ error: 'Limit exceeded for free'})
+  }
+  
   return next()
 }
 
@@ -39,7 +39,8 @@ function checksTodoExists(request, response, next) {
   const user = users.find(user => user.username === username)
   const todo = user.todos.find(todo => todo.id === id)
 
-  if (!(validId && todo)) return response.status(404).json({ error: 'incorrect data' })
+  if (!validId) return response.status(400).json({ error: 'Not is uuid' })
+  if (!todo) return response.status(404).json({ error: 'Todo not found' })
 
   request.todo = todo
 
@@ -51,16 +52,12 @@ function findUserById(request, response, next) {
 
   const user = users.find(user => user.id === id)
 
+  if (!user) return response.status(404).json({ error: 'User not found' })
+
   request.user = user
 
   return next()
 }
-
-app.delete('/users', (request, response) => {
-  users = []
-
-  return response.status(204).send()
-})
 
 app.post('/users', (request, response) => {
   const { name, username } = request.body;

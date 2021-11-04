@@ -1,5 +1,6 @@
 const request = require('supertest');
 const { validate } = require('uuid');
+const { users } = require('../')
 
 const { app } = require('../');
 
@@ -14,9 +15,7 @@ describe('Users', () => {
   })
   
   afterEach(async () => {
-    await request(app)
-      .delete('/users')
-      .send()
+    users.splice(0, users.length)
   })
 
   it('should be able to create a new user', async () => {
