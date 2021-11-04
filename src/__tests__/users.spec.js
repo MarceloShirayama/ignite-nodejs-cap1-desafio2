@@ -55,7 +55,6 @@ describe('Users', () => {
       .post('/users')
       .send(fakeUser);
 
-    console.log(userData);
     const response = await request(app)
       .get(`/users/${userData.id}`);
 
