@@ -7,23 +7,35 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const users = [];
+let users = [];
 
 function checksExistsUserAccount(request, response, next) {
-  // Complete aqui
+  // TODO: Complete aqui
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  // TODO: Complete aqui
 }
 
 function checksTodoExists(request, response, next) {
-  // Complete aqui
+  // TODO: Complete aqui
 }
 
 function findUserById(request, response, next) {
-  // Complete aqui
+  const { id } = request.params
+
+  const user = users.find(user => user.id === id)
+
+  request.user = user
+
+  return next()
 }
+
+app.delete('/users', (request, response) => {
+  users = []
+
+  return response.status(204).send()
+})
 
 app.post('/users', (request, response) => {
   const { name, username } = request.body;

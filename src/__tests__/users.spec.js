@@ -10,8 +10,15 @@ describe('Users', () => {
     fakeUser = {
       name: 'John Doe',
       username: 'johndoe1'
-    }
+    }  
   })
+  
+  afterEach(async () => {
+    await request(app)
+      .delete('/users')
+      .send()
+  })
+
   it('should be able to create a new user', async () => {
     const response = await request(app)
       .post('/users')
@@ -31,7 +38,7 @@ describe('Users', () => {
   it(
     'should not be able to create a new user when username already exists',
     async () => {
-      await request(app)
+      const { body: userData } = await request(app)
         .post('/users')
         .send(fakeUser);
 
@@ -43,20 +50,17 @@ describe('Users', () => {
       expect(response.body.error).toBeTruthy();
   });
 
-  it.skip('should be able to show user data', async () => {
+  it('should be able to show user data', async () => {
     const { body: userData } = await request(app)
       .post('/users')
-      .send({
-        name: 'John Doe',
-        username: 'johndoe3'
-      });
+      .send(fakeUser);
 
+    console.log(userData);
     const response = await request(app)
       .get(`/users/${userData.id}`);
 
     expect(response.body).toMatchObject({
-      name: 'John Doe',
-      username: 'johndoe3',
+      ...fakeUser,
       todos: [],
       pro: false
     })
